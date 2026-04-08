@@ -60,14 +60,13 @@ PRICE_FMT=$(format_number "$AERO_PRICE")
 EV_FMT=$(format_number "$EMISSIONS_VALUE")
 MULT_FMT=$(format_number "$MULTIPLIER")
 
-REPORT="📊 Aerodrome Multiplier Report — $DATE
+REPORT="📊 Aerodrome Multiplier Snapshot — $DATE
 
 Current Stats:
-• New Emissions: ${NE_FMT} AERO
-• Total Rewards: \$${TR_FMT}
 • AERO Price: \$${PRICE_FMT}
+• New Emissions: ${NE_FMT} AERO
 • Emissions Value: \$${EV_FMT}
-
+• Total Rewards: \$${TR_FMT}
 🎯 Current Multiplier: ${MULT_FMT}x
 (Emission value ÷ Total Rewards)
 
@@ -75,12 +74,16 @@ Current Stats:
 if [ -n "$EMISSIONS_VALUE" ] && [ -n "$TOTAL_REWARDS" ]; then
   for inc in 1000 25000 50000 100000; do
     sim=$(python3 -c "print('{:.2f}'.format(float('$EMISSIONS_VALUE') / (float('$TOTAL_REWARDS') + $inc)))" 2>/dev/null | sed -e 's/\.0*$//')
-    REPORT="$REPORT"$'\n'" + $inc -> ${sim}x"
+    REPORT="$REPORT
+ $${inc:,} -> ${sim}x"
   done
 else
-  REPORT="$REPORT"$'\n'" N/A -> N/Ax"
+  REPORT="$REPORT
+ N/A -> N/Ax"
 fi
-REPORT="$REPORT"$'\n'"Note: Adding incentives increases total rewards while emissions stay fixed, so multiplier decreases."$'\n'"$'\n'""🧮 Calculate your own: https://aero-multiplier-calculator.pages.dev/"
+REPORT="$REPORT
+Note: Adding incentives increases total rewards while emissions stay fixed, so multiplier decreases.
+🧮 Calculate your own: https://aero-multiplier-calculator.pages.dev/"
 
 echo "$REPORT"
 mkdir -p "$DATA_DIR"
