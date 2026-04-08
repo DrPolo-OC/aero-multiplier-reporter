@@ -74,8 +74,9 @@ Current Stats:
 if [ -n "$EMISSIONS_VALUE" ] && [ -n "$TOTAL_REWARDS" ]; then
   for inc in 1000 25000 50000 100000; do
     sim=$(python3 -c "print('{:.2f}'.format(float('$EMISSIONS_VALUE') / (float('$TOTAL_REWARDS') + $inc)))" 2>/dev/null | sed -e 's/\.0*$//')
+    inc_fmt=$(python3 -c "print('{:,}'.format($inc))" 2>/dev/null || echo "$inc")
     REPORT="$REPORT
- $${inc:,} -> ${sim}x"
+ \$${inc_fmt} -> ${sim}x"
   done
 else
   REPORT="$REPORT
